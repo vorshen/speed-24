@@ -1,0 +1,29 @@
+{
+  "colors": {
+    "background": "#18181B",
+    "surface": "#27272A",
+    "primary": "#F97316",
+    "secondary": "#6366F1",
+    "text": {
+      "primary": "#F4F4F5",
+      "secondary": "#A1A1AA"
+    },
+    "error": "#EF4444",
+    "success": "#10B981"
+  },
+  "fonts": {
+    "mono": "\"JetBrains Mono\", \"Roboto Mono\", monospace",
+    "sans": "\"Inter\", system-ui, sans-serif"
+  },
+  "radius": {
+    "lg": "0.5rem",
+    "xl": "0.75rem",
+    "full": "9999px"
+  },
+  "animation": {
+    "spring": {
+      "stiffness": 400,
+      "damping": 30
+    }
+  }
+}

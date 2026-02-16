@@ -1,0 +1,29 @@
+{
+  "version": "1.0",
+  "initialState": "home",
+  "states": [
+    {
+      "id": "home",
+      "name": "Home",
+      "page": "home",
+      "params": {}
+    },
+    {
+      "id": "difficulty",
+      "name": "Select Difficulty",
+      "page": "difficulty",
+      "params": {}
+    },
+    {
+      "id": "game",
+      "name": "Game Flow",
+      "page": "game",
+      "params": {
+        "level": "medium",
+        "isGameOver": false,
+        "isWin": false,
+        "showSolution": false
+      }
+    }
+  ]
+}
