@@ -441,8 +441,8 @@ export function GameScreen({ config, streak, onStreakChange, level, transitionTo
             ) : (
               <>
                 <Text style={styles.overlayIcon}>✕</Text>
-                <Text style={styles.overlayTitle}>CONNECTION LOST</Text>
-                <Text style={styles.overlaySubTitle}>The flow was interrupted.</Text>
+                <Text style={styles.overlayTitle}>ROUND FAILED</Text>
+                <Text style={styles.overlaySubTitle}>No valid 24 expression was completed in time.</Text>
                 {hint && (
                   <View style={styles.hintWrap}>
                     <Text style={styles.hintLabel}>SOLUTION FOUND</Text>

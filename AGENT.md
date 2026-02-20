@@ -45,7 +45,7 @@ These are reference inputs for semantic extraction, not mandatory production imp
 - JavaScript/TypeScript projects in this repository use **pnpm** as package manager.
 - `prototype/src/data/*.json` are **semantic source references only**.
 - In `business/`, production runtime should use typed modules/adapters (for example `StateRegistry`, repositories, token registry), not direct JSON copies as runtime dependencies.
-- For current Flow24 scope, backend is optional:
+- For current scope, backend is optional:
   - If no backend features are required, use frontend-local repository implementations (in-memory/local persistence) behind interfaces.
   - Keep boundaries so backend can be added later by replacing adapters, not rewriting pages.
 

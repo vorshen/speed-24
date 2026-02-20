@@ -5,12 +5,31 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
+    "icon": "./assets/speed24.png",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
     "ios": {
-      "supportsTablet": false
+      "supportsTablet": false,
+      "bundleIdentifier": "com.niuma.flow24",
+      "buildNumber": "1",
+      "icon": "./assets/speed24.png",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.niuma.flow24"
     },
-    "scheme": "flow24"
+    "scheme": "flow24",
+    "extra": {
+      "eas": {
+        "projectId": "2f33aa5a-5164-4494-bea6-d885bea8ab71"
+      }
+    }
   }
 }
