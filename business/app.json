@@ -3,7 +3,7 @@
     "name": "Flow 24",
     "slug": "flow-24-business",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "userInterfaceStyle": "dark",
     "icon": "./assets/speed24.png",
     "runtimeVersion": {
@@ -13,7 +13,7 @@
       "fallbackToCacheTimeout": 0
     },
     "ios": {
-      "supportsTablet": false,
+      "supportsTablet": true,
       "bundleIdentifier": "com.niuma.flow24",
       "buildNumber": "1",
       "icon": "./assets/speed24.png",

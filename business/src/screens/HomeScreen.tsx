@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import { tokens } from "../core/theme";
 
 interface HomeScreenProps {
@@ -6,23 +6,31 @@ interface HomeScreenProps {
 }
 
 export function HomeScreen({ transitionTo }: HomeScreenProps) {
+  const { width } = useWindowDimensions();
+  const isTablet = width >= 768;
+  const horizontalPadding = isTablet ? 36 : 24;
+  const verticalPadding = isTablet ? 28 : 20;
+  const buttonWidth = isTablet ? 480 : 340;
+
   return (
-    <View style={styles.container}>
-      <View style={styles.titleGroup}>
-        <Text style={styles.title}>
-          FLOW <Text style={styles.titleAccent}>24</Text>
-        </Text>
-        <Text style={styles.subtitle}>MINIMALIST BRAIN FITNESS</Text>
-      </View>
+    <View style={[styles.container, { paddingHorizontal: horizontalPadding, paddingVertical: verticalPadding }]}>
+      <View style={styles.centerContent}>
+        <View style={styles.titleGroup}>
+          <Text style={styles.title}>
+            FLOW <Text style={styles.titleAccent}>24</Text>
+          </Text>
+          <Text style={styles.subtitle}>MINIMALIST BRAIN FITNESS</Text>
+        </View>
 
-      <View style={styles.buttons}>
-        <Pressable onPress={() => transitionTo("difficulty")} style={({ pressed }) => [styles.primaryButton, pressed && styles.pressed]}>
-          <Text style={styles.primaryButtonLabel}>SINGLE PLAYER</Text>
-        </Pressable>
+        <View style={[styles.buttons, { maxWidth: buttonWidth }]}>
+          <Pressable onPress={() => transitionTo("difficulty")} style={({ pressed }) => [styles.primaryButton, pressed && styles.pressed]}>
+            <Text style={styles.primaryButtonLabel}>SINGLE PLAYER</Text>
+          </Pressable>
 
-        <View style={styles.disabledButton}>
-          <Text style={styles.disabledLabel}>MULTIPLAYER</Text>
-          <Text style={styles.disabledBadge}>SOON</Text>
+          <View style={styles.disabledButton}>
+            <Text style={styles.disabledLabel}>MULTIPLAYER</Text>
+            <Text style={styles.disabledBadge}>SOON</Text>
+          </View>
         </View>
       </View>
 
@@ -36,8 +44,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: tokens.colors.background,
     alignItems: "center",
+    justifyContent: "space-between",
+  },
+  centerContent: {
+    flex: 1,
+    width: "100%",
+    alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 24,
     gap: 56,
   },
   titleGroup: {
@@ -61,11 +74,11 @@ const styles = StyleSheet.create({
   },
   buttons: {
     width: "100%",
-    maxWidth: 340,
     gap: 16,
   },
   primaryButton: {
-    height: 58,
+    minHeight: 58,
+    paddingVertical: 10,
     borderRadius: tokens.radius.xl,
     backgroundColor: "#27272a",
     borderWidth: 1,
@@ -79,7 +92,8 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   disabledButton: {
-    height: 58,
+    minHeight: 58,
+    paddingVertical: 10,
     borderRadius: tokens.radius.xl,
     backgroundColor: "#18181b",
     borderWidth: 1,
@@ -105,12 +119,11 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   footnote: {
-    position: "absolute",
-    bottom: 28,
     color: "#71717a",
     fontSize: 10,
     letterSpacing: 1.6,
     fontWeight: "600",
+    marginTop: 16,
   },
   pressed: {
     transform: [{ scale: 0.98 }],

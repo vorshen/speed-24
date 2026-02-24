@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Audio } from "expo-av";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import { ActionButton } from "../components/ActionButton";
 import { BackButton } from "../components/BackButton";
 import { GameCard } from "../components/GameCard";
@@ -126,6 +126,15 @@ const generateGame = (config: GameConfig, mode: RoundMode): { cards: Card[]; mod
 };
 
 export function GameScreen({ config, streak, onStreakChange, level, transitionTo, goBack }: GameScreenProps) {
+  const { width } = useWindowDimensions();
+  const isTablet = width >= 768;
+  const contentMaxWidth = isTablet ? 760 : 430;
+  const horizontalPadding = isTablet ? 36 : 24;
+  const topPadding = isTablet ? 24 : 18;
+  const bottomPadding = isTablet ? 30 : 22;
+  const cardsMaxWidth = isTablet ? 520 : 350;
+  const overlayMaxWidth = isTablet ? 620 : 370;
+
   const timeLimit = useMemo(() => {
     const difficulty = config.difficulties[level as keyof typeof config.difficulties];
     return difficulty?.time ?? config.difficulties.medium.time;
@@ -375,63 +384,67 @@ export function GameScreen({ config, streak, onStreakChange, level, transitionTo
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.topRow}>
-        <BackButton onPress={goBack} showLabel={false} />
-        <View style={styles.headerWrap}>
-          <HeaderBar progress={(timeLeft / timeLimit) * 100} streak={streak} timeLeft={timeLeft} />
+    <View style={[styles.container, { paddingHorizontal: horizontalPadding, paddingTop: topPadding, paddingBottom: bottomPadding }]}>
+      <View style={[styles.mainContent, { maxWidth: contentMaxWidth }]}>
+        <View style={styles.topRow}>
+          <BackButton onPress={goBack} showLabel={false} />
+          <View style={styles.headerWrap}>
+            <HeaderBar progress={(timeLeft / timeLimit) * 100} streak={streak} timeLeft={timeLeft} />
+          </View>
         </View>
-      </View>
 
-      <View style={styles.expressionArea}>
-        <Text style={currentExpression ? styles.expression : styles.expressionPlaceholder}>
-          {currentExpression || "Express Flow"}
-        </Text>
-      </View>
+        <View style={styles.expressionArea}>
+          <Text style={styles.expressionLabel}>FORMULA PREVIEW</Text>
+          <Text style={currentExpression ? styles.expression : styles.expressionPlaceholder}>
+            {currentExpression || "Tap cards + operators to build a formula"}
+          </Text>
+          <Text style={styles.expressionHint}>Display only. Formulas are created by taps, not keyboard input.</Text>
+        </View>
 
-      <View style={styles.cardsArea}>
-        <View style={styles.cardsGrid}>
-          {cards.map((card, index) => (
-            <View key={card.id} style={styles.cardCell}>
-              <GameCard
-                value={card.value}
-                rank={card.rank}
-                suit={card.suit}
-                isSelected={selectedIndex === index}
-                isUsed={card.isUsed}
-                onPress={() => onCardPress(index)}
+        <View style={styles.cardsArea}>
+          <View style={[styles.cardsGrid, { maxWidth: cardsMaxWidth }]}>
+            {cards.map((card, index) => (
+              <View key={card.id} style={styles.cardCell}>
+                <GameCard
+                  value={card.value}
+                  rank={card.rank}
+                  suit={card.suit}
+                  isSelected={selectedIndex === index}
+                  isUsed={card.isUsed}
+                  onPress={() => onCardPress(index)}
+                />
+              </View>
+            ))}
+          </View>
+        </View>
+
+        <View style={styles.bottomArea}>
+          <View style={styles.operatorRow}>
+            {["+", "-", "x", "/"].map((operator) => (
+              <OperatorButton
+                key={operator}
+                operator={operator}
+                selected={selectedOperator === operator}
+                onPress={() => {
+                  if (selectedIndex !== null) {
+                    setSelectedOperator(operator);
+                  }
+                }}
               />
-            </View>
-          ))}
-        </View>
-      </View>
+            ))}
+          </View>
 
-      <View style={styles.bottomArea}>
-        <View style={styles.operatorRow}>
-          {["+", "-", "x", "/"].map((operator) => (
-            <OperatorButton
-              key={operator}
-              operator={operator}
-              selected={selectedOperator === operator}
-              onPress={() => {
-                if (selectedIndex !== null) {
-                  setSelectedOperator(operator);
-                }
-              }}
-            />
-          ))}
-        </View>
-
-        <View style={styles.actionRow}>
-          <ActionButton label="Check!" variant="primary" onPress={checkSolution} />
-          <ActionButton label="Reset" onPress={reset} />
-          <ActionButton label="Undo" onPress={undo} />
+          <View style={styles.actionRow}>
+            <ActionButton label="Check!" variant="primary" onPress={checkSolution} />
+            <ActionButton label="Reset" onPress={reset} />
+            <ActionButton label="Undo" onPress={undo} />
+          </View>
         </View>
       </View>
 
       {gameState !== "playing" && (
-        <View style={styles.overlay}>
-          <View style={styles.overlayCard}>
+        <View style={[styles.overlay, { paddingHorizontal: horizontalPadding }]}>
+          <View style={[styles.overlayCard, { maxWidth: overlayMaxWidth }]}>
             {gameState === "win" ? (
               <>
                 <Text style={styles.overlayIcon}>✓</Text>
@@ -471,38 +484,55 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: tokens.colors.background,
-    paddingHorizontal: 24,
-    paddingTop: 18,
-    paddingBottom: 22,
+    alignItems: "center",
+  },
+  mainContent: {
+    width: "100%",
+    flex: 1,
   },
   topRow: {
     flexDirection: "row",
     gap: 14,
     alignItems: "flex-start",
-    marginBottom: 30,
+    marginBottom: 24,
   },
   headerWrap: {
     flex: 1,
   },
   expressionArea: {
-    minHeight: 84,
+    minHeight: 102,
     borderTopWidth: 1,
     borderBottomWidth: 1,
     borderColor: "#3f3f46",
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 28,
+    marginBottom: 24,
     paddingHorizontal: 12,
+    paddingVertical: 10,
+    gap: 4,
+  },
+  expressionLabel: {
+    color: "#a1a1aa",
+    fontSize: 10,
+    letterSpacing: 1.4,
+    fontWeight: "700",
   },
   expression: {
     color: tokens.colors.text.primary,
-    fontSize: 30,
+    fontSize: 28,
     fontWeight: "700",
+    textAlign: "center",
   },
   expressionPlaceholder: {
     color: "#71717a",
-    fontSize: 22,
+    fontSize: 18,
     fontStyle: "italic",
+    textAlign: "center",
+  },
+  expressionHint: {
+    color: "#71717a",
+    fontSize: 11,
+    textAlign: "center",
   },
   cardsArea: {
     flex: 1,
@@ -511,7 +541,6 @@ const styles = StyleSheet.create({
   },
   cardsGrid: {
     width: "100%",
-    maxWidth: 350,
     flexDirection: "row",
     flexWrap: "wrap",
     rowGap: 12,
@@ -521,12 +550,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
   },
   bottomArea: {
-    marginTop: 22,
-    gap: 20,
+    marginTop: 20,
+    gap: 16,
   },
   operatorRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "center",
+    gap: 12,
     paddingHorizontal: 4,
   },
   actionRow: {
@@ -542,11 +572,9 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(24,24,27,0.92)",
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 24,
   },
   overlayCard: {
     width: "100%",
-    maxWidth: 370,
     backgroundColor: "#27272a",
     borderWidth: 1,
     borderColor: "#3f3f46",
@@ -605,7 +633,8 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   nextButton: {
-    height: 50,
+    minHeight: 50,
+    paddingVertical: 10,
     borderRadius: 12,
     backgroundColor: tokens.colors.primary,
     justifyContent: "center",
@@ -617,7 +646,8 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
   quitButton: {
-    height: 50,
+    minHeight: 50,
+    paddingVertical: 10,
     borderRadius: 12,
     backgroundColor: "#18181b",
     borderWidth: 1,

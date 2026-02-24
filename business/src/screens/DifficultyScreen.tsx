@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import { BackButton } from "../components/BackButton";
 import type { GameConfig } from "../domain/game-config";
 import { tokens } from "../core/theme";
@@ -10,32 +10,41 @@ interface DifficultyScreenProps {
 }
 
 export function DifficultyScreen({ config, transitionTo, goBack }: DifficultyScreenProps) {
+  const { width } = useWindowDimensions();
+  const isTablet = width >= 768;
+  const horizontalPadding = isTablet ? 36 : 24;
+  const topPadding = isTablet ? 24 : 18;
+  const bottomPadding = isTablet ? 30 : 24;
+  const contentMaxWidth = isTablet ? 760 : 430;
+
   const difficulties = Object.values(config.difficulties);
 
   return (
-    <View style={styles.container}>
-      <BackButton onPress={goBack} />
+    <View style={[styles.container, { paddingHorizontal: horizontalPadding, paddingTop: topPadding, paddingBottom: bottomPadding }]}>
+      <View style={[styles.contentWrap, { maxWidth: contentMaxWidth }]}>
+        <BackButton onPress={goBack} />
 
-      <View style={styles.content}>
-        <View style={styles.heading}>
-          <Text style={styles.title}>CHOOSE</Text>
-          <Text style={styles.subtitle}>Select your tempo for this session.</Text>
-        </View>
+        <View style={styles.content}>
+          <View style={styles.heading}>
+            <Text style={styles.title}>CHOOSE</Text>
+            <Text style={styles.subtitle}>Select your tempo for this session.</Text>
+          </View>
 
-        <View style={styles.options}>
-          {difficulties.map((difficulty) => (
-            <Pressable
-              key={difficulty.id}
-              onPress={() => transitionTo("game", { level: difficulty.id })}
-              style={({ pressed }) => [styles.optionButton, pressed && styles.pressed]}
-            >
-              <View>
-                <Text style={styles.optionTitle}>{difficulty.label.toUpperCase()}</Text>
-                <Text style={styles.optionDesc}>{difficulty.description}</Text>
-              </View>
-              <Text style={styles.optionTime}>{difficulty.time}s</Text>
-            </Pressable>
-          ))}
+          <View style={styles.options}>
+            {difficulties.map((difficulty) => (
+              <Pressable
+                key={difficulty.id}
+                onPress={() => transitionTo("game", { level: difficulty.id })}
+                style={({ pressed }) => [styles.optionButton, pressed && styles.pressed]}
+              >
+                <View>
+                  <Text style={styles.optionTitle}>{difficulty.label.toUpperCase()}</Text>
+                  <Text style={styles.optionDesc}>{difficulty.description}</Text>
+                </View>
+                <Text style={styles.optionTime}>{difficulty.time}s</Text>
+              </Pressable>
+            ))}
+          </View>
         </View>
       </View>
     </View>
@@ -46,9 +55,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: tokens.colors.background,
-    paddingHorizontal: 24,
-    paddingTop: 18,
-    paddingBottom: 24,
+    alignItems: "center",
+  },
+  contentWrap: {
+    width: "100%",
+    flex: 1,
   },
   content: {
     flex: 1,

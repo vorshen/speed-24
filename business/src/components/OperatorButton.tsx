@@ -18,7 +18,8 @@ export function OperatorButton({ operator, selected, onPress }: OperatorButtonPr
 const styles = StyleSheet.create({
   base: {
     width: 56,
-    height: 56,
+    minHeight: 56,
+    aspectRatio: 1,
     borderRadius: tokens.radius.full,
     borderWidth: 1,
     justifyContent: "center",

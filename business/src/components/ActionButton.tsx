@@ -28,7 +28,8 @@ export function ActionButton({ label, variant = "secondary", disabled = false, o
 const styles = StyleSheet.create({
   base: {
     flex: 1,
-    height: 48,
+    minHeight: 48,
+    paddingVertical: 8,
     borderRadius: tokens.radius.lg,
     justifyContent: "center",
     alignItems: "center",
